@@ -1,54 +1,63 @@
-#include <stdio.h>
 #include "sort.h"
-
 /**
- * sift_down - Performs the sift-down operation in the Heap sort algorithm
- * @array: The array to be sorted
- * @start: The start index of the heap
- * @end: The end index of the heap
- * @size: The size of the array
- */
-void sift_down(int *array, size_t start, size_t end, size_t size)
-{
-    size_t root = start;
-    size_t child;
-
-    while ((child = 2 * root + 1) <= end) {
-        if (child + 1 <= end && array[child] < array[child + 1])
-            child++;
-
-        if (array[root] < array[child]) {
-            int temp = array[root];
-            array[root] = array[child];
-            array[child] = temp;
-            print_array(array, size);
-            root = child;
-        } else {
-            return;
-        }
-    }
-}
-
-/**
- * heap_sort - Sorts an array of integers in ascending order using the Heap sort algorithm
- * @array: The array to be sorted
- * @size: The size of the array
+ * heap_sort - sorts an array in ascending order using the Heap sort algorithm
+ * @array: array to be sorted
+ * @size: size of the array to be sorted
+ * Return: is void
  */
 void heap_sort(int *array, size_t size)
 {
-    if (array == NULL || size <= 1)
-        return;
+	int temp, i;
 
-    /* Build max heap */
-    for (int i = size / 2 - 1; i >= 0; i--)
-        sift_down(array, i, size - 1, size);
+	for (i = size / 2 - 1 ; i >= 0 ; i--)
+	{
+		heapify(array, i, size, size);
+	}
 
-    /* Heap sort */
-    for (int i = size - 1; i > 0; i--) {
-        int temp = array[0];
-        array[0] = array[i];
-        array[i] = temp;
-        print_array(array, size);
-        sift_down(array, 0, i - 1, size);
-    }
+	i = size - 1;
+	while (i > 0)
+	{
+		temp = array[i];
+		array[i] = array[0];
+		array[0] = temp;
+		print_array(array, size);
+		heapify(array, 0, i, size);
+		i--;
+	}
+}
+
+/**
+ * heapify - puts the array into the heap
+ * @array: array to be sorted
+ * @min: element farthest to the left
+ * @max: element farthest to the right
+ * @size: size of the array
+ * Return: is void
+ */
+void heapify(int *array, int min, int max, size_t size)
+{
+	int root, temp, right, left;
+
+	root = min;
+	left = 2 * root + 1;
+	right = 2 * root + 2;
+
+	if (left < max && array[left] > array[root])
+	{
+		root = left;
+	}
+
+	if (right < max && array[right] > array[root])
+	{
+		root = right;
+	}
+
+	if (min != root)
+	{
+		temp = array[root];
+		array[root] = array[min];
+		array[min] = temp;
+		print_array(array, size);
+		heapify(array, root, max, size);
+	}
 }
